@@ -5,7 +5,7 @@ set -e  # Exit on any error
 date
 echo "Updating Python application on VM..."
 
-REPO_URL="https://github.com/Ab00R1/chatbot-projctb.git"
+REPO_URL="github.com/Ab00R1/chatbot-projctb.git"
 BRANCH="main"
 GITHUB_TOKEN=$TOKEN  # Passed securely via protectedSettings
 HOME_DIR=$(eval echo ~$USER)
@@ -23,8 +23,6 @@ sudo -u azureuser $HOME_DIR/miniconda3/envs/project/bin/pip install --upgrade pi
 sudo -u azureuser $HOME_DIR/miniconda3/envs/project/bin/pip install -r "${APP_DIR}/requirements.txt"
 
 # Restart services and check status
-sudo systemctl restart backend
-sudo systemctl is-active --quiet backend || echo "Backend failed to start"
 sudo systemctl restart frontend
 sudo systemctl is-active --quiet frontend || echo "Frontend failed to start"
 
