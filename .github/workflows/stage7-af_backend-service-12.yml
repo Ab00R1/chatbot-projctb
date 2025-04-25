@@ -83,6 +83,6 @@ jobs:
           app-name: 'backend-service-12'
           slot-name: 'Production'
           package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
-          storage-account-name: devappstorageu9r
+          storage-account-name: "devappstorageu9r"
           scm-do-build-during-deployment: true
           enable-oryx-build: true
