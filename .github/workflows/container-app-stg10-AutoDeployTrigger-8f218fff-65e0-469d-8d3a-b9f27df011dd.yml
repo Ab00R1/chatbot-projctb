@@ -1,0 +1,48 @@
+name: Trigger auto deployment for container-app-stg10
+
+# When this action will be executed
+on:
+  # Automatically trigger it when detected changes in repo
+  push:
+    branches: 
+      [ stage10 ]
+    paths:
+    - '**'
+    - '.github/workflows/container-app-stg10-AutoDeployTrigger-8f218fff-65e0-469d-8d3a-b9f27df011dd.yml'
+
+  # Allow manual trigger 
+  workflow_dispatch:      
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions: 
+      id-token: write #This is required for requesting the OIDC JWT Token
+      contents: read #Required when GH token is used to authenticate with private repo
+
+    steps:
+      - name: Checkout to the branch
+        uses: actions/checkout@v2
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.CONTAINERAPPSTG10_AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.CONTAINERAPPSTG10_AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.CONTAINERAPPSTG10_AZURE_SUBSCRIPTION_ID }}
+
+      - name: Build and push container image to registry
+        uses: azure/container-apps-deploy-action@v2
+        with:
+          appSourcePath: ${{ github.workspace }}
+          _dockerfilePathKey_: _dockerfilePath_
+          registryUrl: registry5chatbot.azurecr.io
+          registryUsername: ${{ secrets.CONTAINERAPPSTG10_REGISTRY_USERNAME }}
+          registryPassword: ${{ secrets.CONTAINERAPPSTG10_REGISTRY_PASSWORD }}
+          containerAppName: container-app-stg10
+          resourceGroup: st99-project2-z7h
+          imageToBuild: registry5chatbot.azurecr.io/container-app-stg10:${{ github.sha }}
+          _buildArgumentsKey_: |
+            _buildArgumentsValues_
+
+
